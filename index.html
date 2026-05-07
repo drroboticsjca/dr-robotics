@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Dr.Robotics — متجر الخدمات الذكية</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&family=Orbitron:wght@500;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
+<style>
+  :root { --bg-deep:#050810; --bg-panel:#0a1322; --bg-card:#0f1a2e; --grid-line:rgba(0,229,255,0.06); --cyan:#00e5ff; --cyan-dim:#00b8d4; --neon:#7df9ff; --gold:#ffb547; --magenta:#ff2e92; --green:#00ff9d; --text:#e6f1ff; --text-dim:#8fa3bf; --text-mute:#5a6f8c; --border:rgba(0,229,255,0.18); --border-strong:rgba(0,229,255,0.4); --glow:0 0 20px rgba(0,229,255,0.35); --glow-strong:0 0 40px rgba(0,229,255,0.55); }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  html, body { background:var(--bg-deep); color:var(--text); font-family:'Tajawal',sans-serif; overflow-x:hidden; scroll-behavior:smooth; line-height:1.6; }
+  body::before { content:''; position:fixed; inset:0; background-image:linear-gradient(var(--grid-line) 1px,transparent 1px),linear-gradient(90deg,var(--grid-line) 1px,transparent 1px); background-size:60px 60px; z-index:0; pointer-events:none; animation:gridShift 30s linear infinite; }
+  body::after { content:''; position:fixed; inset:0; background:radial-gradient(ellipse at 20% 0%,rgba(0,229,255,0.12),transparent 50%),radial-gradient(ellipse at 80% 100%,rgba(255,46,146,0.08),transparent 50%); z-index:0; pointer-events:none; }
+  @keyframes gridShift { 0% { background-position:0 0,0 0; } 100% { background-position:60px 60px,60px 60px; } }
+  .scanlines { position:fixed; inset:0; background:repeating-linear-gradient(0deg,transparent 0,transparent 2px,rgba(0,229,255,0.02) 2px,rgba(0,229,255,0.02) 4px); pointer-events:none; z-index:1; }
+  header, section, footer { position:relative; z-index:2; }
+  header { padding:20px 40px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border); background:rgba(5,8,16,0.8); backdrop-filter:blur(12px); position:sticky; top:0; z-index:100; }
+  .logo { display:flex; align-items:center; gap:14px; cursor:pointer; }
+  .logo-mark { width:48px; height:48px; position:relative; display:flex; align-items:center; justify-content:center; }
+  .logo-mark svg { width:100%; height:100%; filter:drop-shadow(0 0 8px var(--cyan)); }
+  .logo-mark::before { content:''; position:absolute; inset:-4px; border:1px solid var(--cyan); border-radius:50%; opacity:0.4; animation:pulse 2s ease-in-out infinite; }
+  @keyframes pulse { 0%,100% { transform:scale(1); opacity:0.4; } 50% { transform:scale(1.15); opacity:0; } }
+  .logo-text { display:flex; flex-direction:column; line-height:1; }
+  .logo-text .brand { font-family:'Orbitron',sans-serif; font-weight:900; font-size:22px; letter-spacing:1px; color:var(--cyan); text-shadow:0 0 10px rgba(0,229,255,0.5); }
+  .logo-text .tag { font-size:11px; color:var(--text-dim); margin-top:4px; letter-spacing:2px; font-family:'JetBrains Mono',monospace; }
+  nav ul { display:flex; list-style:none; gap:30px; }
+  nav a { color:var(--text-dim); text-decoration:none; font-size:14px; font-weight:500; transition:color 0.3s; }
+  nav a:hover { color:var(--cyan); text-shadow:0 0 8px rgba(0,229,255,0.6); }
+  .status-pill { display:flex; align-items:center; gap:8px; padding:8px 14px; border:1px solid var(--green); border-radius:100px; font-size:12px; color:var(--green); font-family:'JetBrains Mono',monospace; background:rgba(0,255,157,0.05); }
+  .status-dot { width:8px; height:8px; background:var(--green); border-radius:50%; box-shadow:0 0 8px var(--green); animation:blink 1.5s ease-in-out infinite; }
+  @keyframes blink { 0%,100% { opacity:1; } 50% { opacity:0.3; } }
+  .hero { padding:100px 40px 80px; text-align:center; }
+  .hero-badge { display:inline-flex; align-items:center; gap:10px; padding:8px 18px; border:1px solid var(--border-strong); border-radius:100px; font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--cyan); margin-bottom:30px; background:rgba(0,229,255,0.05); animation:fadeInUp 0.8s ease-out; }
+  .hero h1 { font-family:'Orbitron',sans-serif; font-size:clamp(40px,7vw,88px); font-weight:900; line-height:1.05; margin-bottom:24px; letter-spacing:-1px; animation:fadeInUp 0.9s ease-out 0.1s both; }
+  .hero h1 .accent { background:linear-gradient(135deg,var(--cyan) 0%,var(--neon) 50%,var(--magenta) 100%); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .hero h2 { font-size:clamp(20px,3vw,32px); font-weight:400; color:var(--text-dim); margin-bottom:30px; animation:fadeInUp 0.9s ease-out 0.2s both; }
+  .hero p.intro { max-width:780px; margin:0 auto 40px; font-size:17px; line-height:1.9; opacity:0.85; animation:fadeInUp 0.9s ease-out 0.3s both; }
+  .hero-cta { display:flex; gap:16px; justify-content:center; flex-wrap:wrap; animation:fadeInUp 0.9s ease-out 0.4s both; }
+  .btn { padding:14px 32px; border-radius:4px; text-decoration:none; font-weight:700; font-size:14px; letter-spacing:1px; transition:all 0.3s; cursor:pointer; border:none; font-family:'Tajawal',sans-serif; }
+  .btn-primary { background:var(--cyan); color:var(--bg-deep); box-shadow:var(--glow); }
+  .btn-primary:hover { background:var(--neon); box-shadow:var(--glow-strong); transform:translateY(-2px); }
+  .btn-ghost { background:transparent; color:var(--cyan); border:1px solid var(--cyan); }
+  .btn-ghost:hover { background:rgba(0,229,255,0.1); box-shadow:var(--glow); }
+  @keyframes fadeInUp { from { opacity:0; transform:translateY(30px); } to { opacity:1; transform:translateY(0); } }
+  .hero-stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:30px; max-width:900px; margin:80px auto 0; padding:30px; border:1px solid var(--border); border-radius:8px; background:rgba(15,26,46,0.5); backdrop-filter:blur(10px); animation:fadeInUp 0.9s ease-out 0.5s both; }
+  .stat-item { text-align:center; border-left:1px solid var(--border); padding-left:20px; }
+  .stat-item:last-child { border-left:none; }
+  .stat-num { font-family:'Orbitron',sans-serif; font-size:36px; font-weight:900; color:var(--cyan); line-height:1; }
+  .stat-label { font-size:13px; color:var(--text-dim); margin-top:8px; letter-spacing:1px; }
+  .section-head { text-align:center; margin-bottom:60px; padding:0 20px; }
+  .section-tag { display:inline-block; font-family:'JetBrains Mono',monospace; color:var(--cyan); font-size:12px; letter-spacing:3px; margin-bottom:16px; padding:6px 14px; border-top:1px solid var(--cyan); border-bottom:1px solid var(--cyan); }
+  .section-title { font-family:'Orbitron',sans-serif; font-size:clamp(28px,5vw,48px); font-weight:800; margin-bottom:16px; }
+  .section-sub { color:var(--text-dim); font-size:17px; max-width:600px; margin:0 auto; }
+  .about { padding:100px 40px; max-width:1100px; margin:0 auto; }
+  .about-content { background:linear-gradient(135deg,rgba(15,26,46,0.8),rgba(10,19,34,0.6)); border:1px solid var(--border); border-radius:8px; padding:50px; position:relative; overflow:hidden; }
+  .about-content::before { content:''; position:absolute; top:0; left:0; width:4px; height:100%; background:linear-gradient(180deg,var(--cyan),var(--magenta)); }
+  .about-content p { font-size:17px; line-height:2; margin-bottom:18px; }
+  .about-content p:first-of-type { font-size:19px; color:var(--cyan); font-weight:500; }
+  .about-tags { display:flex; flex-wrap:wrap; gap:10px; margin-top:30px; padding-top:30px; border-top:1px dashed var(--border); }
+  .about-tag { padding:6px 14px; background:rgba(0,229,255,0.1); border:1px solid var(--border); border-radius:4px; font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--neon); }
+  .services { padding:100px 40px; max-width:1400px; margin:0 auto; }
+  .services-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(340px,1fr)); gap:24px; }
+  .service-card { background:var(--bg-card); border:1px solid var(--border); border-radius:8px; padding:32px; position:relative; transition:all 0.4s; overflow:hidden; }
+  .service-card:hover { border-color:var(--border-strong); transform:translateY(-6px); box-shadow:0 20px 50px rgba(0,229,255,0.15); }
+  .service-num { font-family:'JetBrains Mono',monospace; color:var(--text-mute); font-size:12px; letter-spacing:2px; margin-bottom:16px; }
+  .service-icon { width:56px; height:56px; margin-bottom:20px; display:flex; align-items:center; justify-content:center; background:rgba(0,229,255,0.08); border:1px solid var(--border); border-radius:8px; color:var(--cyan); transition:all 0.3s; }
+  .service-card:hover .service-icon { background:rgba(0,229,255,0.15); transform:scale(1.05); box-shadow:var(--glow); }
+  .service-icon svg { width:28px; height:28px; }
+  .service-title { font-family:'Orbitron',sans-serif; font-size:20px; font-weight:700; margin-bottom:12px; }
+  .service-desc { color:var(--text-dim); font-size:14px; line-height:1.8; margin-bottom:24px; }
+  .service-features { list-style:none; margin-bottom:24px; }
+  .service-features li { color:var(--text-dim); font-size:13px; padding:4px 0; padding-right:18px; position:relative; }
+  .service-features li::before { content:'◆'; position:absolute; right:0; color:var(--cyan); font-size:8px; top:8px; }
+  .service-price { border-top:1px dashed var(--border); padding-top:18px; display:flex; justify-content:space-between; align-items:flex-end; }
+  .price-label { font-size:11px; color:var(--text-mute); font-family:'JetBrains Mono',monospace; letter-spacing:1px; margin-bottom:4px; }
+  .price-value { font-family:'Orbitron',sans-serif; font-size:22px; color:var(--cyan); font-weight:700; line-height:1; }
+  .price-currency { font-size:13px; color:var(--text-dim); margin-right:4px; }
+  .order-btn { background:transparent; border:1px solid var(--cyan); color:var(--cyan); padding:8px 18px; border-radius:4px; font-size:12px; font-family:'Tajawal',sans-serif; font-weight:700; cursor:pointer; transition:all 0.3s; letter-spacing:1px; }
+  .order-btn:hover { background:var(--cyan); color:var(--bg-deep); box-shadow:var(--glow); }
+  .service-card.featured { border-color:var(--magenta); background:linear-gradient(135deg,var(--bg-card),rgba(255,46,146,0.05)); }
+  .service-card.featured .service-icon { background:rgba(255,46,146,0.1); border-color:rgba(255,46,146,0.3); color:var(--magenta); }
+  .service-card.featured .price-value, .service-card.featured .order-btn { color:var(--magenta); border-color:var(--magenta); }
+  .service-card.featured .order-btn:hover { background:var(--magenta); color:var(--text); }
+  .featured-badge { position:absolute; top:20px; left:20px; background:var(--magenta); color:var(--text); padding:4px 10px; font-size:10px; font-family:'JetBrains Mono',monospace; border-radius:100px; }
+  .extras { padding:100px 40px; max-width:1400px; margin:0 auto; }
+  .extras-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:16px; }
+  .extra-card { background:var(--bg-panel); border:1px solid var(--border); padding:22px; border-radius:6px; display:flex; align-items:center; gap:16px; transition:all 0.3s; cursor:pointer; }
+  .extra-card:hover { border-color:var(--cyan); transform:translateX(-4px); box-shadow:-4px 0 0 0 var(--cyan); }
+  .extra-icon { flex-shrink:0; width:40px; height:40px; background:rgba(0,229,255,0.08); border-radius:6px; display:flex; align-items:center; justify-content:center; color:var(--cyan); }
+  .extra-icon svg { width:20px; height:20px; }
+  .extra-text h4 { font-size:14px; margin-bottom:4px; font-weight:700; }
+  .extra-text .extra-price { font-size:12px; color:var(--cyan); font-family:'JetBrains Mono',monospace; }
+  .process { padding:100px 40px; max-width:1100px; margin:0 auto; }
+  .process-steps { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); }
+  .process-step { text-align:center; padding:30px 20px; }
+  .step-num { font-family:'Orbitron',sans-serif; font-size:60px; font-weight:900; color:var(--cyan); opacity:0.3; line-height:1; margin-bottom:16px; text-shadow:0 0 20px rgba(0,229,255,0.4); }
+  .step-title { font-family:'Orbitron',sans-serif; font-size:16px; font-weight:700; margin-bottom:10px; letter-spacing:1px; }
+  .step-desc { color:var(--text-dim); font-size:13px; line-height:1.7; }
+  .payment { padding:100px 40px; max-width:1100px; margin:0 auto; }
+  .payment-card { background:linear-gradient(135deg,rgba(15,26,46,0.8),rgba(10,19,34,0.6)); border:1px solid var(--border); border-radius:12px; padding:50px; position:relative; overflow:hidden; }
+  .payment-card::before { content:''; position:absolute; top:0; left:0; width:4px; height:100%; background:linear-gradient(180deg,var(--cyan),var(--green)); }
+  .bank-info { display:grid; grid-template-columns:1fr 1fr; gap:24px; margin-top:30px; }
+  @media (max-width:768px) { .bank-info { grid-template-columns:1fr; } }
+  .bank-row { background:rgba(5,8,16,0.5); padding:18px 20px; border-radius:8px; border:1px solid var(--border); }
+  .bank-row.full { grid-column:1/-1; }
+  .bank-label { font-size:11px; color:var(--text-mute); font-family:'JetBrains Mono',monospace; letter-spacing:2px; margin-bottom:8px; }
+  .bank-value { font-size:16px; color:var(--cyan); font-weight:700; font-family:'JetBrains Mono',monospace; word-break:break-all; display:flex; justify-content:space-between; align-items:center; gap:10px; }
+  .copy-btn { background:rgba(0,229,255,0.1); border:1px solid var(--cyan); color:var(--cyan); padding:4px 10px; border-radius:4px; font-size:11px; cursor:pointer; font-family:'JetBrains Mono',monospace; transition:all 0.2s; flex-shrink:0; }
+  .copy-btn:hover { background:var(--cyan); color:var(--bg-deep); }
+  .copy-btn.copied { background:var(--green); color:var(--bg-deep); border-color:var(--green); }
+  .payment-note { margin-top:30px; padding:18px; background:rgba(255,181,71,0.08); border:1px solid rgba(255,181,71,0.3); border-radius:6px; color:var(--gold); font-size:13px; }
+  .cta-section { padding:100px 40px; text-align:center; max-width:900px; margin:0 auto; }
+  .cta-box { background:linear-gradient(135deg,rgba(0,229,255,0.08),rgba(255,46,146,0.05)); border:1px solid var(--border-strong); border-radius:12px; padding:60px 40px; }
+  .cta-box h2 { font-family:'Orbitron',sans-serif; font-size:clamp(28px,5vw,44px); margin-bottom:16px; }
+  .cta-box p { color:var(--text-dim); font-size:17px; margin-bottom:30px; }
+  .contact-channels { display:flex; justify-content:center; gap:16px; flex-wrap:wrap; }
+  .contact-channel { padding:14px 24px; border:1px solid var(--border); border-radius:6px; background:rgba(5,8,16,0.6); color:var(--text); text-decoration:none; font-size:14px; display:flex; align-items:center; gap:10px; transition:all 0.3s; cursor:pointer; font-family:'Tajawal',sans-serif; }
+  .contact-channel:hover { border-color:var(--cyan); color:var(--cyan); box-shadow:var(--glow); }
+  footer { padding:40px; border-top:1px solid var(--border); text-align:center; color:var(--text-mute); font-size:13px; background:rgba(5,8,16,0.8); }
+  footer .footer-brand { font-family:'Orbitron',sans-serif; color:var(--cyan); font-weight:700; margin-bottom:8px; font-size:16px; }
+  .bot-launcher { position:fixed; bottom:24px; left:24px; z-index:999; width:64px; height:64px; border-radius:50%; background:linear-gradient(135deg,var(--cyan),var(--magenta)); border:2px solid var(--cyan); cursor:pointer; display:flex; align-items:center; justify-content:center; box-shadow:0 8px 30px rgba(0,229,255,0.5); animation:botPulse 2.5s infinite; transition:transform 0.3s; }
+  .bot-launcher:hover { transform:scale(1.1); }
+  .bot-launcher svg { width:32px; height:32px; color:var(--bg-deep); }
+  @keyframes botPulse { 0% { box-shadow:0 8px 30px rgba(0,229,255,0.5),0 0 0 0 rgba(0,229,255,0.7); } 70% { box-shadow:0 8px 30px rgba(0,229,255,0.5),0 0 0 20px rgba(0,229,255,0); } 100% { box-shadow:0 8px 30px rgba(0,229,255,0.5),0 0 0 0 rgba(0,229,255,0); } }
+  .bot-badge { position:absolute; top:-4px; right:-4px; width:20px; height:20px; background:var(--green); border-radius:50%; border:2px solid var(--bg-deep); display:flex; align-items:center; justify-content:center; color:var(--bg-deep); font-size:11px; font-weight:900; }
+  .bot-window { position:fixed; bottom:100px; left:24px; z-index:998; width:380px; max-width:calc(100vw - 32px); height:560px; max-height:calc(100vh - 140px); background:var(--bg-panel); border:1px solid var(--border-strong); border-radius:16px; display:flex; flex-direction:column; overflow:hidden; box-shadow:0 30px 80px rgba(0,0,0,0.7); transform:scale(0.8) translateY(20px); opacity:0; pointer-events:none; transition:all 0.3s cubic-bezier(0.16,1,0.3,1); transform-origin:bottom left; }
+  .bot-window.open { transform:scale(1) translateY(0); opacity:1; pointer-events:auto; }
+  .bot-header { padding:16px 20px; background:linear-gradient(135deg,rgba(0,229,255,0.15),rgba(255,46,146,0.08)); border-bottom:1px solid var(--border); display:flex; align-items:center; gap:12px; }
+  .bot-avatar { width:40px; height:40px; border-radius:50%; background:linear-gradient(135deg,var(--cyan),var(--magenta)); display:flex; align-items:center; justify-content:center; }
+  .bot-avatar svg { width:22px; height:22px; color:var(--bg-deep); }
+  .bot-info { flex:1; }
+  .bot-name { font-family:'Orbitron',sans-serif; font-size:14px; font-weight:700; }
+  .bot-status { font-size:11px; color:var(--green); display:flex; align-items:center; gap:6px; margin-top:2px; }
+  .bot-status::before { content:''; width:6px; height:6px; background:var(--green); border-radius:50%; box-shadow:0 0 6px var(--green); }
+  .bot-close { background:transparent; border:none; color:var(--text-dim); cursor:pointer; padding:6px; border-radius:4px; transition:all 0.2s; }
+  .bot-close:hover { background:rgba(255,46,146,0.15); color:var(--magenta); }
+  .bot-close svg { width:18px; height:18px; }
+  .bot-messages { flex:1; padding:18px; overflow-y:auto; display:flex; flex-direction:column; gap:12px; background:var(--bg-deep); }
+  .bot-messages::-webkit-scrollbar { width:6px; }
+  .bot-messages::-webkit-scrollbar-thumb { background:var(--border-strong); border-radius:3px; }
+  .msg { max-width:85%; padding:10px 14px; border-radius:12px; font-size:14px; line-height:1.5; animation:msgIn 0.3s ease; word-wrap:break-word; white-space:pre-line; }
+  @keyframes msgIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+  .msg.bot { background:var(--bg-card); border:1px solid var(--border); align-self:flex-start; border-bottom-right-radius:4px; }
+  .msg.user { background:linear-gradient(135deg,var(--cyan),var(--cyan-dim)); color:var(--bg-deep); align-self:flex-end; border-bottom-left-radius:4px; font-weight:500; }
+  .msg.system { background:rgba(0,255,157,0.08); border:1px solid rgba(0,255,157,0.3); color:var(--green); align-self:center; max-width:100%; text-align:center; font-size:12px; font-family:'JetBrains Mono',monospace; }
+  .bot-typing { display:flex; gap:4px; padding:10px 14px; background:var(--bg-card); border:1px solid var(--border); border-radius:12px; border-bottom-right-radius:4px; align-self:flex-start; }
+  .bot-typing span { width:6px; height:6px; background:var(--cyan); border-radius:50%; animation:typingDot 1.4s infinite; }
+  .bot-typing span:nth-child(2) { animation-delay:0.2s; }
+  .bot-typing span:nth-child(3) { animation-delay:0.4s; }
+  @keyframes typingDot { 0%,60%,100% { opacity:0.3; transform:translateY(0); } 30% { opacity:1; transform:translateY(-4px); } }
+  .bot-options { display:flex; flex-direction:column; gap:6px; align-self:flex-start; max-width:90%; }
+  .bot-option { background:rgba(0,229,255,0.08); border:1px solid var(--border); color:var(--cyan); padding:8px 14px; border-radius:20px; cursor:pointer; font-size:13px; transition:all 0.2s; text-align:right; font-family:'Tajawal',sans-serif; }
+  .bot-option:hover { background:var(--cyan); color:var(--bg-deep); transform:translateX(-4px); }
+  .bot-input-area { padding:12px; border-top:1px solid var(--border); background:var(--bg-panel); display:flex; gap:8px; }
+  .bot-input { flex:1; background:var(--bg-card); border:1px solid var(--border); color:var(--text); padding:10px 14px; border-radius:8px; font-family:'Tajawal',sans-serif; font-size:14px; outline:none; transition:border-color 0.2s; }
+  .bot-input:focus { border-color:var(--cyan); }
+  .bot-input:disabled { opacity:0.5; cursor:not-allowed; }
+  .bot-send { background:var(--cyan); color:var(--bg-deep); border:none; padding:10px 14px; border-radius:8px; cursor:pointer; transition:all 0.2s; display:flex; align-items:center; justify-content:center; }
+  .bot-send:hover:not(:disabled) { background:var(--neon); box-shadow:var(--glow); }
+  .bot-send:disabled { opacity:0.5; cursor:not-allowed; }
+  .bot-send svg { width:18px; height:18px; }
+  @media (max-width:768px) {
+    header { padding:16px 20px; flex-wrap:wrap; gap:14px; }
+    nav ul { gap:16px; }
+    nav a { font-size:13px; }
+    .status-pill { display:none; }
+    .hero { padding:60px 20px 50px; }
+    .about, .services, .extras, .process, .payment, .cta-section { padding:60px 20px; }
+    .about-content, .payment-card { padding:30px 24px; }
+    .stat-item { border-left:none; padding:0; border-bottom:1px solid var(--border); padding-bottom:16px; }
+    .stat-item:last-child { border-bottom:none; padding-bottom:0; }
+    .bot-window { left:8px; right:8px; width:auto; bottom:90px; height:calc(100vh - 110px); }
+    .bot-launcher { width:56px; height:56px; bottom:16px; left:16px; }
+  }
+</style>
+</head>
+<body>
+<div class="scanlines"></div>
+
+<header>
+  <div class="logo">
+    <div class="logo-mark">
+      <svg viewBox="0 0 48 48" fill="none">
+        <circle cx="24" cy="24" r="20" stroke="currentColor" stroke-width="1.5" opacity="0.3"/>
+        <rect x="14" y="16" width="20" height="18" rx="3" stroke="#00e5ff" stroke-width="2" fill="none"/>
+        <circle cx="20" cy="23" r="2" fill="#00e5ff"/>
+        <circle cx="28" cy="23" r="2" fill="#00e5ff"/>
+        <path d="M19 30 L29 30" stroke="#00e5ff" stroke-width="2" stroke-linecap="round"/>
+        <line x1="24" y1="8" x2="24" y2="16" stroke="#00e5ff" stroke-width="2"/>
+        <circle cx="24" cy="7" r="2" fill="#7df9ff"/>
+      </svg>
+    </div>
+    <div class="logo-text">
+      <span class="brand">Dr.Robotics</span>
+      <span class="tag">SMART • SOLUTIONS • LAB</span>
+    </div>
+  </div>
+  <nav>
+    <ul>
+      <li><a href="#about">عنّا</a></li>
+      <li><a href="#services">الخدمات</a></li>
+      <li><a href="#extras">إضافات</a></li>
+      <li><a href="#payment">الدفع</a></li>
+      <li><a href="#contact">تواصل</a></li>
+    </ul>
+  </nav>
+  <div class="status-pill">
+    <span class="status-dot"></span>
+    <span>AI BOT ONLINE</span>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-badge"><span>◉</span><span>RESEARCH-DRIVEN • AI POWERED</span></div>
+  <h1>حلول ذكية<br/><span class="accent">للمستقبل القادم</span></h1>
+  <h2>هندسة • روبوتات • ذكاء اصطناعي • تحليل بيانات</h2>
+  <p class="intro">من تصميم المخططات ثلاثية الأبعاد إلى أنظمة تتبع العمال بالذكاء الاصطناعي، من دراسات الجدوى إلى الاستشارات المتخصصة في الروبوتات — منصة متكاملة تجمع البحث الأكاديمي بالخبرة التطبيقية.</p>
+  <div class="hero-cta">
+    <a href="#services" class="btn btn-primary">استكشف الخدمات</a>
+    <button class="btn btn-ghost" onclick="openBot()">💬 تحدّث مع البوت</button>
+  </div>
+  <div class="hero-stats">
+    <div class="stat-item"><div class="stat-num">12+</div><div class="stat-label">خدمة احترافية</div></div>
+    <div class="stat-item"><div class="stat-num">24/7</div><div class="stat-label">بوت ذكي</div></div>
+    <div class="stat-item"><div class="stat-num">100%</div><div class="stat-label">جودة مضمونة</div></div>
+    <div class="stat-item"><div class="stat-num">PhD</div><div class="stat-label">خبرة أكاديمية</div></div>
+  </div>
+</section>
+
+<section class="about" id="about">
+  <div class="section-head">
+    <span class="section-tag">// ABOUT</span>
+    <h2 class="section-title">من نحن</h2>
+    <p class="section-sub">باحث متخصص يجمع بين الأكاديميا والتطبيق العملي</p>
+  </div>
+  <div class="about-content">
+    <p>باحث متخصص في مجال الروبوتات والذكاء الاصطناعي، مع خبرة أكاديمية وبحثية متقدمة في الجامعات الدولية الرائدة.</p>
+    <p>تخصصي يجمع بين الأبحاث المتقدمة في الروبوتات الذاتية، التعلم المعزز (Reinforcement Learning)، والرؤية الحاسوبية (Computer Vision)، إلى جانب التطبيقات الصناعية في أتمتة المصانع وتحليل البيانات.</p>
+    <p>أقدّم من خلال هذه المنصة خدمات احترافية مبنية على أحدث ما توصّل إليه العلم، مع التركيز على الجودة، الدقة، والتسليم في الوقت المحدد.</p>
+    <div class="about-tags">
+      <span class="about-tag">Robotics PhD</span>
+      <span class="about-tag">AI / Machine Learning</span>
+      <span class="about-tag">Computer Vision</span>
+      <span class="about-tag">Reinforcement Learning</span>
+      <span class="about-tag">IEEE Publications</span>
+      <span class="about-tag">ROS / ROS2</span>
+    </div>
+  </div>
+</section>
+
+<section class="services" id="services">
+  <div class="section-head">
+    <span class="section-tag">// CORE SERVICES</span>
+    <h2 class="section-title">الخدمات الأساسية</h2>
+    <p class="section-sub">اضغط "اطلب الآن" وسيفتح البوت تلقائياً لأخذ تفاصيل طلبك</p>
+  </div>
+  <div class="services-grid">
+    <div class="service-card">
+      <div class="service-num">SVC_001</div>
+      <div class="service-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>
+      <h3 class="service-title">تصميم 3D</h3>
+      <p class="service-desc">مخططات ثلاثية الأبعاد احترافية للمحلات التجارية، البيوت، الفلل، المكاتب.</p>
+      <ul class="service-features"><li>تصميم داخلي وخارجي بدقة عالية</li><li>عرض واقعي (Rendering) فوتوغرافي</li><li>توزيع الأثاث ودراسة الفراغات</li><li>تعديلات مجانية حتى الرضا التام</li></ul>
+      <div class="service-price"><div><div class="price-label">START FROM</div><div class="price-value" data-service="تصميم 3D">3,499<span class="price-currency">ريال</span></div></div><button class="order-btn" onclick="orderService('تصميم 3D')">اطلب الآن</button></div>
+    </div>
+    <div class="service-card featured">
+      <span class="featured-badge">FEATURED</span>
+      <div class="service-num">SVC_002</div>
+      <div class="service-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg></div>
+      <h3 class="service-title">نظام تتبع العمال بالذكاء الاصطناعي</h3>
+      <p class="service-desc">نظام ذكي بالكاميرا يتتبع حركة العمال وساعات العمل ويحلل الإنتاجية.</p>
+      <ul class="service-features"><li>كشف ومتابعة الحركة بدقة عالية</li><li>قياس مدة العمل والاستراحات</li><li>تقارير إنتاجية يومية تلقائية</li><li>لوحة تحكم تفاعلية</li></ul>
+      <div class="service-price"><div><div class="price-label">START FROM</div><div class="price-value" data-service="نظام تتبع العمال بالذكاء الاصطناعي">2,499<span class="price-currency">ريال</span></div></div><button class="order-btn" onclick="orderService('نظام تتبع العمال بالذكاء الاصطناعي')">اطلب الآن</button></div>
+    </div>
+    <div class="service-card">
+      <div class="service-num">SVC_003</div>
+      <div class="service-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
+      <h3 class="service-title">تحليل البيانات</h3>
+      <p class="service-desc">تحويل بياناتك الخام إلى رؤى استراتيجية تساعدك في اتخاذ قرارات مدروسة.</p>
+      <ul class="service-features"><li>تنظيف ومعالجة البيانات</li><li>تحليل إحصائي وتنبؤي</li><li>لوحات تحكم تفاعلية</li><li>Python / R / Power BI</li></ul>
+      <div class="service-price"><div><div class="price-label">START FROM</div><div class="price-value" data-service="تحليل البيانات">299<span class="price-currency">ريال</span></div></div><button class="order-btn" onclick="orderService('تحليل البيانات')">اطلب الآن</button></div>
+    </div>
+    <div class="service-card">
+      <div class="service-num">SVC_004</div>
+      <div class="service-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></div>
+      <h3 class="service-title">حلول الذكاء الاصطناعي</h3>
+      <p class="service-desc">تطوير نماذج ذكاء اصطناعي مخصصة: تعلم آلي، رؤية حاسوبية، معالجة لغة.</p>
+      <ul class="service-features"><li>نماذج تعلم آلي مخصصة (ML)</li><li>الرؤية الحاسوبية وتحليل الصور</li><li>روبوتات محادثة (Chatbots)</li><li>أتمتة المهام المتكررة</li></ul>
+      <div class="service-price"><div><div class="price-label">START FROM</div><div class="price-value" data-service="حلول الذكاء الاصطناعي">1,499<span class="price-currency">ريال</span></div></div><button class="order-btn" onclick="orderService('حلول الذكاء الاصطناعي')">اطلب الآن</button></div>
+    </div>
+    <div class="service-card">
+      <div class="service-num">SVC_005</div>
+      <div class="service-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div>
+      <h3 class="service-title">عروض PowerPoint</h3>
+      <p class="service-desc">تصميم عروض تقديمية احترافية بهوية بصرية متكاملة وانفوجرافيك جذاب.</p>
+      <ul class="service-features"><li>تصميم بصري احترافي</li><li>رسوم بيانية وانفوجرافيك</li><li>قوالب مخصصة بهوية شركتك</li><li>تسليم سريع</li></ul>
+      <div class="service-price"><div><div class="price-label">START FROM</div><div class="price-value" data-service="عروض PowerPoint">99<span class="price-currency">ريال</span></div></div><button class="order-btn" onclick="orderService('عروض PowerPoint')">اطلب الآن</button></div>
+    </div>
+    <div class="service-card">
+      <div class="service-num">SVC_006</div>
+      <div class="service-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/></svg></div>
+      <h3 class="service-title">حلول Excel</h3>
+      <p class="service-desc">جداول إكسل احترافية، معادلات متقدمة، أتمتة بـ VBA، ولوحات تحكم تفاعلية.</p>
+      <ul class="service-features"><li>معادلات وصيغ متقدمة</li><li>Pivot Tables و Power Query</li><li>أتمتة بـ Macros / VBA</li><li>Dashboards تفاعلية</li></ul>
+      <div class="service-price"><div><div class="price-label">START FROM</div><div class="price-value" data-service="حلول Excel">79<span class="price-currency">ريال</span></div></div><button class="order-btn" onclick="orderService('حلول Excel')">اطلب الآن</button></div>
+    </div>
+    <div class="service-card">
+      <div class="service-num">SVC_007</div>
+      <div class="service-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div>
+      <h3 class="service-title">السيرة الذاتية CV</h3>
+      <p class="service-desc">سيرة ذاتية احترافية متوافقة مع أنظمة ATS بتصميم عصري يبرز نقاط قوتك.</p>
+      <ul class="service-features"><li>تصميم متوافق مع ATS</li><li>عربي + إنجليزي</li><li>صياغة محتوى احترافية</li><li>خطاب تقديم (Cover Letter)</li></ul>
+      <div class="service-price"><div><div class="price-label">START FROM</div><div class="price-value" data-service="السيرة الذاتية CV">49<span class="price-currency">ريال</span></div></div><button class="order-btn" onclick="orderService('السيرة الذاتية CV')">اطلب الآن</button></div>
+    </div>
+    <div class="service-card">
+      <div class="service-num">SVC_008</div>
+      <div class="service-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M2 12h20"/><circle cx="12" cy="12" r="9"/></svg></div>
+      <h3 class="service-title">دراسة الجدوى</h3>
+      <p class="service-desc">دراسة جدوى متكاملة (مالية، تسويقية، فنية) مقبولة لدى البنوك السعودية.</p>
+      <ul class="service-features"><li>تحليل سوق دقيق</li><li>دراسة فنية وتشغيلية</li><li>توقعات مالية تفصيلية</li><li>تحليل المخاطر والمنافسين</li></ul>
+      <div class="service-price"><div><div class="price-label">START FROM</div><div class="price-value" data-service="دراسة الجدوى">499<span class="price-currency">ريال</span></div></div><button class="order-btn" onclick="orderService('دراسة الجدوى')">اطلب الآن</button></div>
+    </div>
+    <div class="service-card featured">
+      <span class="featured-badge">EXPERT</span>
+      <div class="service-num">SVC_009</div>
+      <div class="service-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="6" width="12" height="12" rx="2"/><circle cx="9" cy="11" r="1" fill="currentColor"/><circle cx="15" cy="11" r="1" fill="currentColor"/><path d="M9 15h6"/><path d="M12 6V3"/></svg></div>
+      <h3 class="service-title">استشارات الروبوتات والذكاء الاصطناعي</h3>
+      <p class="service-desc">استشارات متخصصة في جميع أنواع الروبوتات والذكاء الاصطناعي بخبرة بحثية.</p>
+      <ul class="service-features"><li>اختيار النظام الروبوتي المناسب</li><li>دراسة الجدوى التقنية</li><li>تخطيط الأتمتة الصناعية</li><li>ROS / ROS2 / MuJoCo / Gazebo</li></ul>
+      <div class="service-price"><div><div class="price-label">START FROM</div><div class="price-value" data-service="استشارات الروبوتات" data-suffix="/ساعة">300<span class="price-currency">ريال/ساعة</span></div></div><button class="order-btn" onclick="orderService('استشارات الروبوتات')">احجز جلسة</button></div>
+    </div>
+  </div>
+</section>
+
+<section class="extras" id="extras">
+  <div class="section-head">
+    <span class="section-tag">// ADDITIONAL</span>
+    <h2 class="section-title">خدمات إضافية</h2>
+    <p class="section-sub">اضغط على أي خدمة لطلبها عبر البوت</p>
+  </div>
+  <div class="extras-grid">
+    <div class="extra-card" onclick="orderService('مشاريع البرمجة')"><div class="extra-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></div><div class="extra-text"><h4>مشاريع البرمجة</h4><div class="extra-price" data-service="مشاريع البرمجة">من 199 ريال</div></div></div>
+    <div class="extra-card" onclick="orderService('الواجبات الجامعية')"><div class="extra-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg></div><div class="extra-text"><h4>الواجبات الجامعية</h4><div class="extra-price" data-service="الواجبات الجامعية">من 79 ريال</div></div></div>
+    <div class="extra-card" onclick="orderService('كتابة أبحاث IEEE')"><div class="extra-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div><div class="extra-text"><h4>كتابة أبحاث IEEE</h4><div class="extra-price" data-service="كتابة أبحاث IEEE">من 799 ريال</div></div></div>
+    <div class="extra-card" onclick="orderService('تصميم البوسترات الأكاديمية')"><div class="extra-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg></div><div class="extra-text"><h4>تصميم البوسترات الأكاديمية</h4><div class="extra-price" data-service="تصميم البوسترات الأكاديمية">من 149 ريال</div></div></div>
+    <div class="extra-card" onclick="orderService('محاكاة MATLAB / Simulink')"><div class="extra-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div><div class="extra-text"><h4>محاكاة MATLAB / Simulink</h4><div class="extra-price" data-service="محاكاة MATLAB / Simulink">من 299 ريال</div></div></div>
+    <div class="extra-card" onclick="orderService('أتمتة المهام Python')"><div class="extra-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><div class="extra-text"><h4>أتمتة المهام (Python)</h4><div class="extra-price" data-service="أتمتة المهام Python">من 149 ريال</div></div></div>
+    <div class="extra-card" onclick="orderService('تصميم CAD / SolidWorks')"><div class="extra-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8"/><polyline points="7.5 4.21 12 6.81 16.5 4.21"/></svg></div><div class="extra-text"><h4>تصميم CAD / SolidWorks</h4><div class="extra-price" data-service="تصميم CAD / SolidWorks">من 499 ريال</div></div></div>
+    <div class="extra-card" onclick="orderService('تطوير نماذج تعلم معزز')"><div class="extra-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v6M12 17v6M4.22 4.22l4.24 4.24M15.54 15.54l4.24 4.24M1 12h6M17 12h6M4.22 19.78l4.24-4.24M15.54 8.46l4.24-4.24"/></svg></div><div class="extra-text"><h4>تطوير نماذج تعلم معزز</h4><div class="extra-price" data-service="تطوير نماذج تعلم معزز">من 699 ريال</div></div></div>
+    <div class="extra-card" onclick="orderService('الطباعة 3D وتصميم النماذج')"><div class="extra-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/></svg></div><div class="extra-text"><h4>الطباعة 3D وتصميم النماذج</h4><div class="extra-price" data-service="الطباعة 3D وتصميم النماذج">حسب التصميم</div></div></div>
+    <div class="extra-card" onclick="orderService('تدريب فردي مخصص اون لاين')"><div class="extra-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div><div class="extra-text"><h4>تدريب فردي مخصص اون لاين</h4><div class="extra-price" data-service="تدريب فردي مخصص اون لاين" data-suffix="/جلسة">من 200 ريال/جلسة</div></div></div>
+  </div>
+</section>
+
+<section class="process" id="process">
+  <div class="section-head">
+    <span class="section-tag">// WORKFLOW</span>
+    <h2 class="section-title">آلية العمل</h2>
+    <p class="section-sub">من الطلب إلى التسليم — عملية بسيطة وشفافة</p>
+  </div>
+  <div class="process-steps">
+    <div class="process-step"><div class="step-num">01</div><h3 class="step-title">تحدّث مع البوت</h3><p class="step-desc">البوت يأخذ تفاصيل طلبك ومتطلباتك</p></div>
+    <div class="process-step"><div class="step-num">02</div><h3 class="step-title">عرض السعر</h3><p class="step-desc">نراجع الطلب ونرسل عرض سعر دقيق على إيميلك</p></div>
+    <div class="process-step"><div class="step-num">03</div><h3 class="step-title">الدفع والتنفيذ</h3><p class="step-desc">تحويل بنكي عبر IBAN ثم نبدأ التنفيذ فوراً</p></div>
+    <div class="process-step"><div class="step-num">04</div><h3 class="step-title">التسليم</h3><p class="step-desc">العمل النهائي على إيميلك مع تعديلات مجانية</p></div>
+  </div>
+</section>
+
+<section class="payment" id="payment">
+  <div class="section-head">
+    <span class="section-tag">// PAYMENT</span>
+    <h2 class="section-title">طريقة الدفع</h2>
+    <p class="section-sub">تحويل بنكي عبر بنك الراجحي</p>
+  </div>
+  <div class="payment-card">
+    <div style="display:flex; align-items:center; gap:14px; margin-bottom:20px;">
+      <div style="width:48px; height:48px; background:rgba(0,229,255,0.1); border:1px solid var(--cyan); border-radius:8px; display:flex; align-items:center; justify-content:center;">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#00e5ff" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+      </div>
+      <div>
+        <h3 style="font-family:'Orbitron',sans-serif; font-size:20px; color:var(--cyan);">بنك الراجحي</h3>
+        <p style="color:var(--text-dim); font-size:13px;">Al Rajhi Bank — التحويل عبر IBAN</p>
+      </div>
+    </div>
+    <div class="bank-info">
+      <div class="bank-row">
+        <div class="bank-label">BANK NAME</div>
+        <div class="bank-value" id="bankNameVal">Al Rajhi Bank</div>
+      </div>
+      <div class="bank-row">
+        <div class="bank-label">ACCOUNT HOLDER</div>
+        <div class="bank-value" id="accountHolderVal">Abdulhamid Mthkur</div>
+      </div>
+      <div class="bank-row full">
+        <div class="bank-label">IBAN</div>
+        <div class="bank-value">
+          <span id="ibanValue">SA28 8000 0316 6080 1020 8402</span>
+          <button class="copy-btn" onclick="copyIBAN(event)">نسخ</button>
+        </div>
+      </div>
+    </div>
+    <div class="payment-note">
+      ⚠️ بعد التحويل، يرجى إرسال صورة الإيصال على dr.roboticsjca@gmail.com ليتم تأكيد الطلب وبدء التنفيذ.
+    </div>
+  </div>
+</section>
+
+<section class="cta-section" id="contact">
+  <div class="cta-box">
+    <h2>جاهز لبدء مشروعك؟</h2>
+    <p>تحدّث مع البوت لطلب أي خدمة، أو راسلنا مباشرة عبر الإيميل</p>
+    <div class="contact-channels">
+      <button class="contact-channel" onclick="openBot()" style="border-color:var(--cyan); color:var(--cyan);">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="14" rx="3"/><circle cx="9" cy="10" r="1.5" fill="currentColor"/><circle cx="15" cy="10" r="1.5" fill="currentColor"/><path d="M9 14h6"/></svg>
+        <span>تحدّث مع البوت</span>
+      </button>
+      <a href="mailto:dr.roboticsjca@gmail.com" class="contact-channel">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        <span>dr.roboticsjca@gmail.com</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-brand">Dr.Robotics</div>
+  <p>© 2026 Dr.Robotics — جميع الحقوق محفوظة</p>
+  <p style="margin-top:8px; font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--text-mute);">[ ENGINEERED WITH PRECISION • POWERED BY RESEARCH ]</p>
+</footer>
+
+<div class="bot-launcher" onclick="openBot()" id="botLauncher">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+    <rect x="3" y="3" width="18" height="14" rx="3"/>
+    <circle cx="9" cy="10" r="1.5" fill="currentColor"/>
+    <circle cx="15" cy="10" r="1.5" fill="currentColor"/>
+    <path d="M9 14h6"/>
+  </svg>
+  <div class="bot-badge">!</div>
+</div>
+
+<div class="bot-window" id="botWindow">
+  <div class="bot-header">
+    <div class="bot-avatar">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <rect x="4" y="6" width="16" height="12" rx="3"/>
+        <circle cx="9" cy="12" r="1.2" fill="currentColor"/>
+        <circle cx="15" cy="12" r="1.2" fill="currentColor"/>
+      </svg>
+    </div>
+    <div class="bot-info">
+      <div class="bot-name">Dr.Bot</div>
+      <div class="bot-status">متصل الآن</div>
+    </div>
+    <button class="bot-close" onclick="closeBot()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+  <div class="bot-messages" id="botMessages"></div>
+  <div class="bot-input-area">
+    <input type="text" class="bot-input" id="botInput" placeholder="اكتب ردّك هنا..." onkeydown="if(event.key==='Enter') handleUserInput()" />
+    <button class="bot-send" id="botSend" onclick="handleUserInput()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+    </button>
+  </div>
+</div>
+
+<script>
+  // ╔══════════════════════════════════════════════════════════════╗
+  // ║                                                              ║
+  // ║          🤖 BOT CONFIGURATION SECTION 🤖                    ║
+  // ║                                                              ║
+  // ║   عدّل القيم في هذا القسم لتخصيص البوت والأسعار            ║
+  // ║   كل تعديل هنا راح ينعكس تلقائياً على الموقع كله           ║
+  // ║                                                              ║
+  // ╚══════════════════════════════════════════════════════════════╝
+
+  const BOT_CONFIG = {
+
+    // ━━━ 1. Formspree Endpoint (لاستقبال الطلبات على الإيميل) ━━━
+    FORMSPREE_ENDPOINT: 'https://formspree.io/f/xnjwddrq',
+
+    // ━━━ 2. Owner Info ━━━
+    OWNER: {
+      name: 'Abdulhamid Mthkur',
+      email: 'dr.roboticsjca@gmail.com'
+    },
+
+    // ━━━ 3. Payment Info (بنك الراجحي) ━━━
+    PAYMENT: {
+      bank: 'Al Rajhi Bank',
+      accountHolder: 'Abdulhamid Mthkur',
+      iban: 'SA28 8000 0316 6080 1020 8402'
+    },
+
+    // ━━━ 4. Bot Identity ━━━
+    BOT: {
+      name: 'Dr.Bot',
+      welcomeMessage: 'أهلاً بك في Dr.Robotics! 👋',
+      introMessage: 'أنا Dr.Bot، مساعدك الذكي. كيف أقدر أساعدك اليوم؟'
+    },
+
+    // ━━━ 5. Available Services (الأسعار + التعقيد) ━━━
+    // complexity = 'low' / 'medium' / 'high'
+    // high = خدمة معقدة → البوت يقول "تحتاج وقت سأستشير"
+    SERVICES: [
+      { name: 'تصميم 3D', price: 3499, complexity: 'high' },
+      { name: 'نظام تتبع العمال بالذكاء الاصطناعي', price: 2499, complexity: 'high' },
+      { name: 'تحليل البيانات', price: 299, complexity: 'medium' },
+      { name: 'حلول الذكاء الاصطناعي', price: 1499, complexity: 'high' },
+      { name: 'عروض PowerPoint', price: 99, complexity: 'low' },
+      { name: 'حلول Excel', price: 79, complexity: 'low' },
+      { name: 'السيرة الذاتية CV', price: 49, complexity: 'low' },
+      { name: 'دراسة الجدوى', price: 499, complexity: 'high' },
+      { name: 'استشارات الروبوتات', price: 300, complexity: 'medium', suffix: '/ساعة' },
+      { name: 'مشاريع البرمجة', price: 199, complexity: 'medium' },
+      { name: 'الواجبات الجامعية', price: 79, complexity: 'low' },
+      { name: 'كتابة أبحاث IEEE', price: 799, complexity: 'high' },
+      { name: 'تصميم البوسترات الأكاديمية', price: 149, complexity: 'low' },
+      { name: 'محاكاة MATLAB / Simulink', price: 299, complexity: 'medium' },
+      { name: 'أتمتة المهام Python', price: 149, complexity: 'medium' },
+      { name: 'تصميم CAD / SolidWorks', price: 499, complexity: 'medium' },
+      { name: 'تطوير نماذج تعلم معزز', price: 699, complexity: 'high' },
+      { name: 'الطباعة 3D وتصميم النماذج', price: 0, complexity: 'medium' },
+      { name: 'تدريب فردي مخصص اون لاين', price: 200, complexity: 'low', suffix: '/جلسة' }
+    ],
+
+    // ━━━ 6. Bot Messages ━━━
+    MESSAGES: {
+      askName: 'بسم الله نبدأ. ما اسمك الكريم؟',
+      askEmail: 'ممكن إيميلك للتواصل وإرسال عرض السعر؟',
+      askDetails: (service) => `اشرح لي بالتفصيل وش تحتاج بالضبط في "${service}"؟`,
+      askDeadline: 'متى تحتاج تسليم العمل؟',
+      askBudget: 'كم ميزانيتك المتوقعة بالريال السعودي؟',
+      highComplexityNote: '⏳ هذه الخدمة تحتاج وقت إضافي للتنفيذ بجودة عالية. سأستشير الفريق وأحدد لك الموعد المناسب في رد عرض السعر.',
+      outOfScope: '🤔 طلبك خارج قائمة خدماتنا الأساسية. لكن لا تقلق! سأرسل طلبك للمراجعة، وإذا كان بإمكاننا تنفيذه، سنتواصل معك خلال 24 ساعة بالعرض المناسب.',
+      successMessage: (name) => `شكراً ${name}! 🎉 سنراجع طلبك ونتواصل معك على الإيميل خلال 24 ساعة بعرض السعر الدقيق وخطوات الدفع.`,
+      errorMessage: 'حدث خطأ في الإرسال. الرجاء المحاولة لاحقاً أو التواصل مباشرة على dr.roboticsjca@gmail.com'
+    }
+  };
+
+  // ╚══════ END OF CONFIGURATION — لا تعدّل تحت هذا السطر ══════╝
+
+  const messagesEl = document.getElementById('botMessages');
+  const inputEl = document.getElementById('botInput');
+  const sendBtn = document.getElementById('botSend');
+  const botWindow = document.getElementById('botWindow');
+  const botLauncher = document.getElementById('botLauncher');
+
+  function openBot() {
+    botWindow.classList.add('open');
+    botLauncher.style.display = 'none';
+    if (state.step === 'idle') startConversation();
+  }
+  function closeBot() {
+    botWindow.classList.remove('open');
+    botLauncher.style.display = 'flex';
+  }
+
+  function addMessage(text, type = 'bot') {
+    const div = document.createElement('div');
+    div.className = `msg ${type}`;
+    div.textContent = text;
+    messagesEl.appendChild(div);
+    messagesEl.scrollTop = messagesEl.scrollHeight;
+  }
+
+  function showTyping() {
+    const div = document.createElement('div');
+    div.className = 'bot-typing';
+    div.id = 'typingIndicator';
+    div.innerHTML = '<span></span><span></span><span></span>';
+    messagesEl.appendChild(div);
+    messagesEl.scrollTop = messagesEl.scrollHeight;
+  }
+  function hideTyping() {
+    const t = document.getElementById('typingIndicator');
+    if (t) t.remove();
+  }
+
+  function showOptions(options) {
+    const wrap = document.createElement('div');
+    wrap.className = 'bot-options';
+    options.forEach(opt => {
+      const btn = document.createElement('button');
+      btn.className = 'bot-option';
+      btn.textContent = opt.label;
+      btn.onclick = () => {
+        wrap.remove();
+        addMessage(opt.label, 'user');
+        opt.action();
+      };
+      wrap.appendChild(btn);
+    });
+    messagesEl.appendChild(wrap);
+    messagesEl.scrollTop = messagesEl.scrollHeight;
+  }
+
+  async function botSay(text, delay = 800) {
+    showTyping();
+    await new Promise(r => setTimeout(r, delay));
+    hideTyping();
+    addMessage(text, 'bot');
+  }
+
+  function setInputEnabled(enabled, placeholder = 'اكتب ردّك هنا...') {
+    inputEl.disabled = !enabled;
+    sendBtn.disabled = !enabled;
+    inputEl.placeholder = placeholder;
+    if (enabled) inputEl.focus();
+  }
+
+  const state = {
+    step: 'idle', service: null, estimatedPrice: null,
+    complexity: 'low', isOutOfScope: false,
+    name: '', email: '', details: '', deadline: '', budget: ''
+  };
+
+  function resetState() {
+    state.step = 'idle';
+    state.service = null; state.estimatedPrice = null;
+    state.complexity = 'low'; state.isOutOfScope = false;
+    state.name = ''; state.email = '';
+    state.details = ''; state.deadline = ''; state.budget = '';
+  }
+
+  // الدالة الرئيسية اللي تستدعى من بطاقات الخدمات
+  function orderService(serviceName) {
+    openBot();
+    setTimeout(() => {
+      messagesEl.innerHTML = '';
+      resetState();
+      const svc = BOT_CONFIG.SERVICES.find(s => s.name === serviceName);
+      state.service = serviceName;
+      state.estimatedPrice = svc ? svc.price : 0;
+      state.complexity = svc ? svc.complexity : 'medium';
+      state.isOutOfScope = false;
+      state.step = 'askName';
+      runFlow();
+    }, 300);
+  }
+
+  async function startConversation() {
+    setInputEnabled(false);
+    await botSay(BOT_CONFIG.BOT.welcomeMessage, 500);
+    await botSay(BOT_CONFIG.BOT.introMessage, 700);
+    showOptions([
+      { label: '🛒 أريد طلب خدمة من القائمة', action: () => { state.step = 'pickService'; askPickService(); } },
+      { label: '🤔 أحتاج خدمة ليست في القائمة', action: () => {
+          state.service = 'طلب مخصص (خارج القائمة)';
+          state.estimatedPrice = 0;
+          state.complexity = 'high';
+          state.isOutOfScope = true;
+          state.step = 'askName';
+          runFlow();
+      }},
+      { label: '💳 معلومات الدفع', action: () => { showPaymentInfo(); } }
+    ]);
+  }
+
+  async function askPickService() {
+    await botSay('ممتاز! اختر الخدمة المطلوبة:', 600);
+    const options = BOT_CONFIG.SERVICES.map(s => ({
+      label: `${s.name} ${s.price > 0 ? '— من ' + s.price + ' ريال' + (s.suffix || '') : '(حسب التصميم)'}`,
+      action: () => {
+        state.service = s.name;
+        state.estimatedPrice = s.price;
+        state.complexity = s.complexity;
+        state.isOutOfScope = false;
+        state.step = 'askName';
+        runFlow();
+      }
+    }));
+    options.push({
+      label: '✏️ خدمة أخرى غير موجودة',
+      action: () => {
+        state.service = 'طلب مخصص (خارج القائمة)';
+        state.estimatedPrice = 0;
+        state.complexity = 'high';
+        state.isOutOfScope = true;
+        state.step = 'askName';
+        runFlow();
+      }
+    });
+    showOptions(options);
+  }
+
+  async function runFlow() {
+    if (state.step === 'askName') {
+      await botSay(`اخترت: ${state.service} ✅`, 500);
+      if (state.isOutOfScope) {
+        await botSay(BOT_CONFIG.MESSAGES.outOfScope, 1000);
+      } else if (state.complexity === 'high') {
+        await botSay(BOT_CONFIG.MESSAGES.highComplexityNote, 1000);
+      }
+      await botSay(BOT_CONFIG.MESSAGES.askName, 700);
+      setInputEnabled(true, 'مثال: عبدالله محمد');
+    }
+    else if (state.step === 'askEmail') {
+      await botSay(`أهلاً ${state.name}! 🌟`, 500);
+      await botSay(BOT_CONFIG.MESSAGES.askEmail, 700);
+      setInputEnabled(true, 'مثال: name@example.com');
+    }
+    else if (state.step === 'askDetails') {
+      await botSay('ممتاز ✅', 400);
+      await botSay(BOT_CONFIG.MESSAGES.askDetails(state.service), 800);
+      setInputEnabled(true, 'اكتب تفاصيل طلبك هنا...');
+    }
+    else if (state.step === 'askDeadline') {
+      await botSay(BOT_CONFIG.MESSAGES.askDeadline, 600);
+      const options = [];
+      if (state.complexity !== 'high') {
+        options.push({ label: '⚡ عاجل (1-3 أيام)', action: () => { state.deadline = 'عاجل (1-3 أيام)'; state.step = 'askBudget'; runFlow(); } });
+      }
+      options.push(
+        { label: '📅 خلال أسبوع', action: () => { state.deadline = 'خلال أسبوع'; state.step = 'askBudget'; runFlow(); } },
+        { label: '📆 خلال أسبوعين', action: () => { state.deadline = 'خلال أسبوعين'; state.step = 'askBudget'; runFlow(); } },
+        { label: '📅 خلال شهر', action: () => { state.deadline = 'خلال شهر'; state.step = 'askBudget'; runFlow(); } },
+        { label: '🕐 مرن — أنتظر تحديد الموعد المناسب', action: () => { state.deadline = 'مرن - حسب تحديد الفريق'; state.step = 'askBudget'; runFlow(); } }
+      );
+      showOptions(options);
+    }
+    else if (state.step === 'askBudget') {
+      const priceInfo = state.estimatedPrice > 0
+        ? `السعر المبدئي للخدمة يبدأ من ${state.estimatedPrice} ريال`
+        : 'السعر يُحدّد بعد مراجعة طلبك';
+      await botSay(priceInfo, 600);
+      await botSay(BOT_CONFIG.MESSAGES.askBudget, 800);
+      setInputEnabled(true, 'مثال: 1000 ريال أو حسب عرضكم');
+    }
+    else if (state.step === 'analyze') {
+      await analyzeAndConfirm();
+    }
+  }
+
+  async function handleUserInput() {
+    const value = inputEl.value.trim();
+    if (!value || inputEl.disabled) return;
+    addMessage(value, 'user');
+    inputEl.value = '';
+    setInputEnabled(false);
+
+    if (state.step === 'askName') {
+      state.name = value;
+      state.step = 'askEmail';
+      runFlow();
+    } else if (state.step === 'askEmail') {
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+        await botSay('عذراً، الإيميل غير صحيح. اكتبه مرة ثانية 🔄', 500);
+        setInputEnabled(true, 'مثال: name@example.com');
+        return;
+      }
+      state.email = value;
+      state.step = 'askDetails';
+      runFlow();
+    } else if (state.step === 'askDetails') {
+      state.details = value;
+      state.step = 'askDeadline';
+      runFlow();
+    } else if (state.step === 'askBudget') {
+      state.budget = value;
+      state.step = 'analyze';
+      runFlow();
+    }
+  }
+
+  async function analyzeAndConfirm() {
+    setInputEnabled(false);
+    await botSay('🔍 جاري تحليل طلبك...', 600);
+    await botSay('✨ تم! هذا ملخص طلبك:', 1500);
+
+    const summary = `📋 ملخص الطلب:
+━━━━━━━━━━━━━━━━━
+👤 الاسم: ${state.name}
+📧 الإيميل: ${state.email}
+🛠️ الخدمة: ${state.service}
+${state.isOutOfScope ? '⚠️ ملاحظة: طلب خارج القائمة (يحتاج مراجعة)\n' : ''}${state.complexity === 'high' ? '⏳ ملاحظة: خدمة تحتاج وقت إضافي\n' : ''}💰 الميزانية: ${state.budget}
+⏱️ الموعد: ${state.deadline}
+━━━━━━━━━━━━━━━━━
+📝 التفاصيل: ${state.details}`;
+
+    addMessage(summary, 'bot');
+
+    await botSay('هل تأكيد إرسال هذا الطلب؟', 800);
+    showOptions([
+      { label: '✅ نعم، أرسل الطلب', action: () => submitOrder() },
+      { label: '✏️ تعديل البيانات', action: () => { resetState(); messagesEl.innerHTML = ''; startConversation(); } },
+      { label: '❌ إلغاء', action: () => { addMessage('تم الإلغاء. تقدر تطلب من جديد في أي وقت 👋', 'system'); resetState(); } }
+    ]);
+  }
+
+  async function submitOrder() {
+    await botSay('📤 جاري إرسال طلبك...', 500);
+
+    const orderData = {
+      _subject: `${state.isOutOfScope ? '⚠️ طلب خاص' : 'طلب جديد'} من ${state.name} — ${state.service}`,
+      الاسم: state.name,
+      الإيميل: state.email,
+      الخدمة_المطلوبة: state.service,
+      حالة_الطلب: state.isOutOfScope ? '⚠️ خارج قائمة الخدمات (يحتاج مراجعة)' : 'ضمن القائمة',
+      مستوى_التعقيد: state.complexity === 'high' ? '⏳ خدمة تحتاج وقت' : (state.complexity === 'medium' ? 'متوسط' : 'بسيط'),
+      السعر_المبدئي: state.estimatedPrice > 0 ? state.estimatedPrice + ' ريال' : 'يُحدّد بعد المراجعة',
+      ميزانية_العميل: state.budget,
+      موعد_التسليم: state.deadline,
+      تفاصيل_الطلب: state.details,
+      وقت_الطلب: new Date().toLocaleString('ar-SA')
+    };
+
+    try {
+      const response = await fetch(BOT_CONFIG.FORMSPREE_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify(orderData)
+      });
+
+      if (response.ok) {
+        addMessage('✅ تم إرسال طلبك بنجاح!', 'system');
+        await botSay(BOT_CONFIG.MESSAGES.successMessage(state.name), 1000);
+
+        if (state.isOutOfScope) {
+          await botSay('⚠️ ملاحظة: طلبك خارج القائمة الأساسية، سنراجعه ونرد عليك بإمكانية التنفيذ والمدة الزمنية.', 1200);
+        } else if (state.complexity === 'high') {
+          await botSay('⏳ خدمتك تحتاج وقت للتنفيذ بجودة عالية. سنتواصل معك بالموعد الدقيق.', 1200);
+        }
+
+        await botSay('💳 معلومات الدفع متوفرة في قسم "الدفع" بالموقع — تحويل بنكي عبر بنك الراجحي.', 1500);
+        showOptions([
+          { label: '💳 شوف معلومات الدفع', action: () => showPaymentInfo() },
+          { label: '🛒 اطلب خدمة أخرى', action: () => { resetState(); messagesEl.innerHTML = ''; startConversation(); } },
+          { label: '👋 خلاص، شكراً', action: () => { addMessage('في أمان الله! 🌟', 'system'); } }
+        ]);
+      } else {
+        throw new Error('Network error');
+      }
+    } catch (e) {
+      addMessage('⚠️ ' + BOT_CONFIG.MESSAGES.errorMessage, 'system');
+    }
+  }
+
+  async function showPaymentInfo() {
+    await botSay('💳 معلومات الدفع — بنك الراجحي:', 600);
+    addMessage(`🏦 البنك: ${BOT_CONFIG.PAYMENT.bank}
+👤 صاحب الحساب: ${BOT_CONFIG.PAYMENT.accountHolder}
+💼 IBAN: ${BOT_CONFIG.PAYMENT.iban}
+
+📌 بعد التحويل، أرسل صورة الإيصال على:
+📧 ${BOT_CONFIG.OWNER.email}`, 'bot');
+    await botSay('هل تريد طلب خدمة الآن؟', 800);
+    showOptions([
+      { label: '🛒 نعم، أريد طلب خدمة', action: () => { state.step = 'pickService'; askPickService(); } },
+      { label: '👋 لا، شكراً', action: () => { addMessage('في أمان الله! 🌟', 'system'); } }
+    ]);
+  }
+
+  function copyIBAN(e) {
+    const iban = document.getElementById('ibanValue').textContent;
+    navigator.clipboard.writeText(iban.replace(/\s/g, '')).then(() => {
+      const btn = e.target;
+      const original = btn.textContent;
+      btn.textContent = '✓ تم النسخ';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = original; btn.classList.remove('copied'); }, 2000);
+    });
+  }
+
+  // ━━━ DYNAMIC SYNC: تحديث جميع الأسعار وبيانات الدفع من BOT_CONFIG ━━━
+  // كل تعديل في BOT_CONFIG راح ينعكس تلقائياً على كامل الموقع
+  function syncFromConfig() {
+    // 1. تحديث بيانات الدفع
+    document.getElementById('bankNameVal').textContent = BOT_CONFIG.PAYMENT.bank;
+    document.getElementById('accountHolderVal').textContent = BOT_CONFIG.PAYMENT.accountHolder;
+    document.getElementById('ibanValue').textContent = BOT_CONFIG.PAYMENT.iban;
+
+    // 2. تحديث كل الأسعار من BOT_CONFIG.SERVICES
+    BOT_CONFIG.SERVICES.forEach(svc => {
+      const formatted = svc.price.toLocaleString('en-US');
+
+      // 2أ. بطاقات الخدمات الأساسية
+      document.querySelectorAll(`.price-value[data-service="${svc.name}"]`).forEach(el => {
+        const suffix = el.getAttribute('data-suffix') || svc.suffix || '';
+        if (svc.price > 0) {
+          el.innerHTML = `${formatted}<span class="price-currency">ريال${suffix}</span>`;
+        } else {
+          el.innerHTML = `<span class="price-currency" style="font-size:18px;">حسب الطلب</span>`;
+        }
+      });
+
+      // 2ب. الخدمات الإضافية
+      document.querySelectorAll(`.extra-price[data-service="${svc.name}"]`).forEach(el => {
+        const suffix = el.getAttribute('data-suffix') || svc.suffix || '';
+        if (svc.price > 0) {
+          el.textContent = `من ${formatted} ريال${suffix}`;
+        } else {
+          el.textContent = 'حسب التصميم';
+        }
+      });
+    });
+  }
+
+  // تشغيل التحديث عند فتح الصفحة
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', syncFromConfig);
+  } else {
+    syncFromConfig();
+  }
+
+  // ━━━ Animations ━━━
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = '1';
+        entry.target.style.transform = 'translateY(0)';
+      }
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.service-card, .extra-card, .process-step').forEach((el, i) => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(20px)';
+    el.style.transition = `opacity 0.6s ease ${i * 0.05}s, transform 0.6s ease ${i * 0.05}s`;
+    observer.observe(el);
+  });
+</script>
+</body>
+</html>
