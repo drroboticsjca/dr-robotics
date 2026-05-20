@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="ar" dir="rtl" id="htmlRoot">
 <head>
 <meta charset="UTF-8" />
@@ -170,6 +171,22 @@
   .contact-channel:hover { border-color:var(--cyan); color:var(--cyan); box-shadow:var(--glow); }
   footer { padding:40px; border-top:1px solid var(--border); text-align:center; color:var(--text-mute); font-size:13px; background:rgba(5,8,16,0.8); }
   footer .footer-brand { font-family:'Orbitron',sans-serif; color:var(--cyan); font-weight:700; margin-bottom:8px; font-size:16px; }
+  /* ━━━ Visitor Counter ━━━ */
+  .visitor-counter { display:inline-flex; align-items:center; gap:20px; margin:24px auto 12px; padding:14px 24px; background:linear-gradient(135deg,rgba(0,229,255,0.05),rgba(255,46,146,0.03)); border:1px solid var(--border); border-radius:100px; backdrop-filter:blur(10px); flex-wrap:wrap; justify-content:center; }
+  .vc-item { display:flex; align-items:center; gap:10px; }
+  .vc-icon { width:32px; height:32px; border-radius:50%; background:rgba(0,229,255,0.1); border:1px solid var(--cyan); display:flex; align-items:center; justify-content:center; color:var(--cyan); flex-shrink:0; }
+  .vc-icon svg { width:16px; height:16px; }
+  .vc-text { text-align:left; line-height:1.2; }
+  html[lang="ar"] .vc-text { text-align:right; }
+  .vc-num { font-family:'Orbitron',sans-serif; font-size:18px; font-weight:900; color:var(--cyan); display:block; }
+  .vc-label { font-size:11px; color:var(--text-mute); font-family:'JetBrains Mono',monospace; letter-spacing:1px; text-transform:uppercase; }
+  .vc-divider { width:1px; height:30px; background:var(--border); }
+  .vc-loading { color:var(--text-mute); font-style:italic; }
+  @media (max-width:600px) {
+    .visitor-counter { padding:12px 16px; gap:12px; }
+    .vc-num { font-size:16px; }
+    .vc-divider { display:none; }
+  }
   .bot-launcher { position:fixed; bottom:24px; z-index:999; width:64px; height:64px; border-radius:50%; background:linear-gradient(135deg,var(--cyan),var(--magenta)); border:2px solid var(--cyan); cursor:pointer; display:flex; align-items:center; justify-content:center; box-shadow:0 8px 30px rgba(0,229,255,0.5); animation:botPulse 2.5s infinite; transition:transform 0.3s; }
   html[lang="ar"] .bot-launcher { left:24px; }
   html[lang="en"] .bot-launcher { right:24px; }
@@ -420,6 +437,31 @@
 
 <footer>
   <div class="footer-brand">Dr.Robotics</div>
+
+  <!-- ━━━ Visitor Counter ━━━ -->
+
+  <div class="visitor-counter" id="visitorCounter">
+    <div class="vc-item">
+      <div class="vc-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+      </div>
+      <div class="vc-text">
+        <span class="vc-num" id="totalVisits">...</span>
+        <span class="vc-label" data-i18n="counter.total">إجمالي الزيارات</span>
+      </div>
+    </div>
+    <div class="vc-divider"></div>
+    <div class="vc-item">
+      <div class="vc-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      </div>
+      <div class="vc-text">
+        <span class="vc-num" id="todayVisits">...</span>
+        <span class="vc-label" data-i18n="counter.today">زوار اليوم</span>
+      </div>
+    </div>
+  </div>
+
   <p data-i18n="footer.rights">© 2026 Dr.Robotics — جميع الحقوق محفوظة</p>
   <p style="margin-top:8px; font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--text-mute);">[ ENGINEERED WITH PRECISION • POWERED BY RESEARCH ]</p>
 </footer>
@@ -545,6 +587,7 @@
       'payment.copy':'نسخ', 'payment.note':'⚠️ بعد التحويل، يرجى إرسال صورة الإيصال على dr.roboticsjca@gmail.com ليتم تأكيد الطلب وبدء التنفيذ.',
       'cta.title':'جاهز لبدء مشروعك؟', 'cta.sub':'تحدّث مع البوت لطلب أي خدمة، أو راسلنا مباشرة عبر الإيميل', 'cta.bot':'تحدّث مع البوت',
       'footer.rights':'© 2026 Dr.Robotics — جميع الحقوق محفوظة',
+      'counter.total':'إجمالي الزيارات', 'counter.today':'زوار اليوم',
       'bot.online':'متصل الآن', 'bot.placeholder':'اكتب ردّك هنا...',
       'order':'اطلب الآن', 'priceFrom':'يبدأ من', 'currency':'ريال', 'consultPrice':'حسب الطلب', 'inquireBtn':'استفسر الآن',
       'quoteOnRequest':'السعر عند المراجعة', 'quoteLabel':'عرض السعر',
@@ -606,6 +649,7 @@
       'payment.copy':'Copy', 'payment.note':'⚠️ After transfer, please send the receipt to dr.roboticsjca@gmail.com to confirm your order and start execution.',
       'cta.title':'Ready to Start Your Project?', 'cta.sub':'Chat with the bot to order any service, or contact us directly via email', 'cta.bot':'Chat with Bot',
       'footer.rights':'© 2026 Dr.Robotics — All Rights Reserved',
+      'counter.total':'Total Visits', 'counter.today':'Today Visits',
       'bot.online':'Online', 'bot.placeholder':'Type your reply here...',
       'order':'Order Now', 'priceFrom':'Starts from', 'currency':'SAR', 'consultPrice':'On request', 'inquireBtn':'Inquire Now',
       'quoteOnRequest':'Quote on review', 'quoteLabel':'Pricing',
@@ -674,7 +718,11 @@
   const EXTRAS_ICONS = ['code','book','doc','image','star','clock','cad','settings','print','teach'];
 
   // ━━━━━━━━━━ STATE ━━━━━━━━━━
-  let LANG = localStorage.getItem('drr_lang') || 'ar';
+  // دعم باراميتر اللغة من الرابط: ?lang=en أو ?lang=ar
+  const urlParams = new URLSearchParams(window.location.search);
+  const langFromUrl = urlParams.get('lang');
+  let LANG = (langFromUrl === 'en' || langFromUrl === 'ar') ? langFromUrl : (localStorage.getItem('drr_lang') || 'ar');
+  if (langFromUrl) localStorage.setItem('drr_lang', LANG);
   function t(key) {
     const dict = TRANSLATIONS[LANG];
     return dict[key] !== undefined ? dict[key] : key;
@@ -1111,6 +1159,78 @@ ${t('b.l.details')}: ${state.details}`;
     });
   }
 
+  // ━━━━━━━━━━ VISITOR COUNTER ━━━━━━━━━━
+  // عداد الزوار باستخدام CounterAPI (مجاني، بدون حساب)
+  async function initVisitorCounter() {
+    const NAMESPACE = 'drroboticsjca';
+    const COUNTER_TOTAL = 'total-visits';
+    const TODAY_KEY = `today-${new Date().toISOString().slice(0,10).replace(/-/g,'')}`;
+
+    const totalEl = document.getElementById('totalVisits');
+    const todayEl = document.getElementById('todayVisits');
+
+    // منع العد المتعدد لنفس الجلسة
+    const sessionKey = 'drr_visited_' + new Date().toDateString();
+    const alreadyVisited = sessionStorage.getItem(sessionKey);
+
+    try {
+      let totalCount, todayCount;
+
+      if (!alreadyVisited) {
+        // أول زيارة في هذه الجلسة → زيد العداد
+        const [totalRes, todayRes] = await Promise.all([
+          fetch(`https://api.counterapi.dev/v1/${NAMESPACE}/${COUNTER_TOTAL}/up`),
+          fetch(`https://api.counterapi.dev/v1/${NAMESPACE}/${TODAY_KEY}/up`)
+        ]);
+        const totalData = await totalRes.json();
+        const todayData = await todayRes.json();
+        totalCount = totalData.count || 0;
+        todayCount = todayData.count || 0;
+        sessionStorage.setItem(sessionKey, '1');
+      } else {
+        // مزار قبل في هذه الجلسة → اقرأ بدون زيادة
+        const [totalRes, todayRes] = await Promise.all([
+          fetch(`https://api.counterapi.dev/v1/${NAMESPACE}/${COUNTER_TOTAL}`),
+          fetch(`https://api.counterapi.dev/v1/${NAMESPACE}/${TODAY_KEY}`)
+        ]);
+        const totalData = await totalRes.json();
+        const todayData = await todayRes.json();
+        totalCount = totalData.count || 0;
+        todayCount = todayData.count || 0;
+      }
+
+      // عرض الأرقام بتأثير عداد متحرك
+      animateNumber(totalEl, totalCount);
+      animateNumber(todayEl, todayCount);
+    } catch (err) {
+      // لو فشل الـ API، اعرض رسالة بسيطة
+      console.warn('Visitor counter unavailable:', err);
+      totalEl.textContent = '—';
+      todayEl.textContent = '—';
+    }
+  }
+
+  function animateNumber(element, target) {
+    const duration = 1500;
+    const start = 0;
+    const startTime = Date.now();
+
+    function update() {
+      const elapsed = Date.now() - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      // Easing function for smoother animation
+      const eased = 1 - Math.pow(1 - progress, 3);
+      const current = Math.floor(start + (target - start) * eased);
+      element.textContent = current.toLocaleString('en-US');
+      if (progress < 1) requestAnimationFrame(update);
+      else element.textContent = target.toLocaleString('en-US');
+    }
+    update();
+  }
+
+  // تشغيل العداد بعد تحميل الصفحة بثانية واحدة (لتحسين الأداء)
+  setTimeout(initVisitorCounter, 1000);
+
   // ━━━ Init ━━━
   applyLanguage();
 
@@ -1132,5 +1252,6 @@ ${t('b.l.details')}: ${state.details}`;
     });
   }, 100);
 </script>
+
 </body>
 </html>
